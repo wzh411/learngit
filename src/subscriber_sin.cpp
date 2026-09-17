@@ -8,6 +8,9 @@ class Subscriber_sin : public rclcpp::Node{
     Node("subscriber_sin"){
         auto topic =
          [this](std_msgs::msg::Float64::UniquePtr msg) -> void{
+            double raw =msg->data;
+            double low = (lastlow) +(alpha_) *(raw-lastlow);
+            lastlow =low;
           RCLCPP_INFO(this->get_logger(), "", msg->data);  
         
         };
@@ -16,6 +19,8 @@ class Subscriber_sin : public rclcpp::Node{
     }
     private:
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr subscription_;
+    double alpha_;           
+    double lastlow;
 };
 int main(int argc,char*argv[]){
     rclcpp::init(argc,argv);
