@@ -6,7 +6,7 @@ using namespace std::chrono_literals;
 int main(int argc, char*argv[]){
   rclcpp::init(argc,argv);
   auto n = std::make_shared<rclcpp::Node>("bo_publisher");
-  auto p=n->create_publisher<std_msgs::msg::Float64>("bo",10);
+  auto p=n->create_publisher<std_msgs::msg::Float64>("sin",10);
   double A = 3.0 , f = 20.0 , pai = M_PI;  
   random_device rd; 
   unsigned int s =rd();
@@ -26,4 +26,4 @@ int main(int argc, char*argv[]){
     }
     rclcpp::shutdown();
 	  return 0;
-}
+} 
