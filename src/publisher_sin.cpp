@@ -12,6 +12,14 @@ int main(int argc, char*argv[]){
   unsigned int s =rd();
   mt19937 g(s); 
   normal_distribution <double> no(0.0, 0.01 * A);
+  auto start = n->now();
+    for(int i=0;rclcpp::ok();i++){
+        auto now = n->now();
+        double t = (now -start).seconds();
+        double y = A*sin(2*pai*f*t);
+        y +=  no(g);
+        auto m = std_msgs::msg::Float64();
+        m.data = y;
   
   
   
