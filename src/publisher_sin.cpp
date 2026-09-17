@@ -22,10 +22,8 @@ int main(int argc, char*argv[]){
         m.data = y;
         RCLCPP_INFO(n->get_logger(),"t =%.3f y = %.3f",t,y);
         p ->publish(m) ;
+        this_thread::sleep_for(2ms);
     }
-  
-  
-  
-  
-  return 0;
+    rclcpp::shutdown();
+	  return 0;
 }
