@@ -20,6 +20,9 @@ int main(int argc, char*argv[]){
         y +=  no(g);
         auto m = std_msgs::msg::Float64();
         m.data = y;
+        RCLCPP_INFO(n->get_logger(),"t =%.3f y = %.3f",t,y);
+        p ->publish(m) ;
+    }
   
   
   
