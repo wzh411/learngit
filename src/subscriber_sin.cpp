@@ -13,26 +13,39 @@ class Subscriber_sin : public rclcpp::Node{
             double lowpass = (lastlow) +(alpha_) *(raw-lastlow);
             lastlow =lowpass;
 
-            media .push_back(raw);
-            if(media .size() >5){
-                media erase(media .begin());
+            mediapass .push_back(raw);
+            if(mediapass .size() >5){
+                mediapass .erase(mediapass .begin());
             }
-            vector<double> t =media;
+            vector<double> t =mediapass;
             sort (t.begin(),t.end());
-            double m = t[t.size()/2];
+            double median = t[t.size()/2];
 
+            auto msg_low = std_msgs::msg::Float64();
+            msg_low.data = lowpass;
+            pub_lowpass_->publish(msg_low);
             
-        RCLCPP_INFO(this->get_logger(), "", msg->data);  
+            auto med = std_msgs::msg::Float64();
+            med.data = median;
+            pub_median_->publish(med);
+        RCLCPP_INFO(this->get_logger(), "原始：%.3f | 低通: %.3f | 中通: %.3f", raw, lowpass, median);  
         
         };
     subscription_ =
     this->create_subscription<std_msgs::msg::Float64>("sin",10,topic);
+    pub_lowpass_ = this->create_publisher<std_msgs::msg::Float64>("sin_lowpass", 10);
+    pub_median_ = this->create_publisher<std_msgs::msg::Float64>("sin_median", 10);
+    alpha_ = 0.1;                     
+    lastlow = 0.0;
     }
     private:
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr subscription_;
     double alpha_;           
     double lastlow;
-    vector <double> media;
+    vector <double> mediapass;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub_lowpass_;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub_median_;
+
 };
 int main(int argc,char*argv[]){
     rclcpp::init(argc,argv);
