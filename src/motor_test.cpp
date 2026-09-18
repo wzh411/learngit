@@ -11,7 +11,12 @@ class Test : public rclcpp::Node{
     subscription = create_subscription<motor_sim_msgs::msg::MotorState>("motor_state", 10,[this](motor_sim_msgs::msg::MotorState::SharedPtr m){
         RCLCPP_INFO(get_logger(), "[自检] w=%.2f th=%.2f", m->av, m->angle);
       });
-    
+    timer = create_wall_timer(100ms, [this]{
+      t += 0.1;
+      auto m = std_msgs::msg::Float64();
+      m.data = (t < 5) ? 1.0 : 0.0;
+      this->publisher -> publish(m);
+    });
   }
 private:
   rclcpp::TimerBase::SharedPtr timer;
