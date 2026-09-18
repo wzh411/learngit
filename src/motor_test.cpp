@@ -14,7 +14,7 @@ class Test : public rclcpp::Node{
     timer = create_wall_timer(100ms, [this]{
       t += 0.1;
       auto m = std_msgs::msg::Float64();
-      m.data = (t < 5) ? 1.0 : 0.0;
+      m.data = 1.0;
       this->publisher -> publish(m);
     });
   }

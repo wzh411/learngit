@@ -55,8 +55,8 @@ def generate_launch_description():
 
     motor = Node(
         package='my_pkg',
-        executable='dianjikongzhi',
-        name='dianjikongzhi',
+        executable='motor',
+        name='motor',
         output='screen',
         emulate_tty=True,
         parameters=[{

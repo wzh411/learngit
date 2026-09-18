@@ -17,8 +17,8 @@ add_executable(subscriber_sin src/subscriber_sin.cpp)
 ament_target_dependencies(subscriber_sin rclcpp std_msgs)
 
 # 电机模拟器：订阅力矩 -> 发布转速/角度
-add_executable(dianjikongzhi src/motor.cpp)
-ament_target_dependencies(dianjikongzhi rclcpp std_msgs motor_sim_msgs)
+add_executable(motor src/motor.cpp)
+ament_target_dependencies(motor rclcpp std_msgs motor_sim_msgs)
 
 # 测试节点：发力矩 + 订阅自检
 add_executable(motor_test src/motor_test.cpp)
@@ -27,7 +27,7 @@ ament_target_dependencies(motor_test rclcpp std_msgs motor_sim_msgs)
 install(TARGETS
   publisher_sin
   subscriber_sin
-  dianjikongzhi
+  motor
   motor_test
   DESTINATION lib/${PROJECT_NAME}
 )
