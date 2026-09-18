@@ -16,7 +16,7 @@ public:
     w += (tau - 0.001*w) / 0.01 * 0.01;
     th += w * 0.01;
     auto m = motor_sim_msgs::msg::MotorState();
-    m.angular_velocity = w; m.angle = th;
+    m.av = w; m.angle = th;
     pub->publish(m);
     RCLCPP_INFO(get_logger(), "tau=%.2f w=%.2f th=%.2f", tau, w, th);
   }

@@ -7,10 +7,13 @@ using namespace std::chrono_literals;
 class Test : public rclcpp::Node{
   public:
   Test(): Node("motor_test"), t(0) {
+    publisher = create_publisher<std_msgs::msg::Float64>("torque_cmd", 10);
+    subscription = create_subscription<motor_sim_msgs::msg::MotorState>("motor_state", 10,[this](motor_sim_msgs::msg::MotorState::SharedPtr m){
+        RCLCPP_INFO(get_logger(), "[自检] w=%.2f th=%.2f", m->av, m->angle);
+      });
     
-
   }
-  private:
+private:
   rclcpp::TimerBase::SharedPtr timer;
   rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr publisher;
   rclcpp::Subscription<motor_sim_msgs::msg::MotorState>::SharedPtr subscription;
