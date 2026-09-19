@@ -28,7 +28,7 @@ public:
             auto msg = std_msgs::msg::Float64();
             msg.data = out;
             pub->publish(msg);
-            RCLCPP_INFO(get_logger(), "tgt=%.1f cur=%.1f out=%.2f", target, current, out);
+            RCLCPP_INFO(get_logger(), "target=%.1f current=%.1f out=%.2f", target, current, out);
         });
     }
 private:
