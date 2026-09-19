@@ -24,11 +24,15 @@ ament_target_dependencies(motor rclcpp std_msgs motor_sim_msgs)
 add_executable(motor_test src/motor_test.cpp)
 ament_target_dependencies(motor_test rclcpp std_msgs motor_sim_msgs)
 
+add_executable(motor_pid src/motor_pid.cpp)
+ament_target_dependencies(motor_pid rclcpp std_msgs motor_sim_msgs)
+
 install(TARGETS
   publisher_sin
   subscriber_sin
   motor
   motor_test
+  motor_pid
   DESTINATION lib/${PROJECT_NAME}
 )
 
