@@ -16,16 +16,17 @@ ament_target_dependencies(publisher_sin rclcpp std_msgs)
 add_executable(subscriber_sin src/subscriber_sin.cpp)
 ament_target_dependencies(subscriber_sin rclcpp std_msgs)
 
-# 电机模拟器：订阅力矩 -> 发布转速/角度
 add_executable(motor src/motor.cpp)
 ament_target_dependencies(motor rclcpp std_msgs motor_sim_msgs)
 
-# 测试节点：发力矩 + 订阅自检
 add_executable(motor_test src/motor_test.cpp)
 ament_target_dependencies(motor_test rclcpp std_msgs motor_sim_msgs)
 
 add_executable(motor_pid src/motor_pid.cpp)
 ament_target_dependencies(motor_pid rclcpp std_msgs motor_sim_msgs)
+
+add_executable(motor_pid_advanced src/motor_pid_advanced.cpp)
+ament_target_dependencies(motor_pid_advanced rclcpp std_msgs motor_sim_msgs)
 
 install(TARGETS
   publisher_sin
@@ -33,10 +34,10 @@ install(TARGETS
   motor
   motor_test
   motor_pid
+  motor_pid_advanced
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# launch 文件与绘图脚本
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
