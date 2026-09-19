@@ -7,9 +7,9 @@ using namespace std::chrono_literals;
 
 class Pid : public rclcpp::Node {
 public:
-    Pid() : Node("motor_pid"), kp(2.0), ki(0.0), kd(0.01),
+    Pid() : Node("motor_pid"), kp(0.5), ki(0.0), kd(0.05),
             target(100), current(0), last_e(0), i(0),
-            il(10.0), mo(50.0), ib(10.0) {
+            il(10.0), mo(5.0), ib(10.0) {
         sub = create_subscription<motor_sim_msgs::msg::MotorState>("motor_state", 10,
             [this](motor_sim_msgs::msg::MotorState::SharedPtr m) {
                 current = m->av;
