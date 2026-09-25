@@ -142,3 +142,5 @@ private:
     OutputInterface<double> motor_command_output_;
     };
 }
+#include <pluginlib/class_list_macros.hpp>
+PLUGINLIB_EXPORT_CLASS(rmcs_core::hardware::Motorcontrol, rmcs_executor::Component)
