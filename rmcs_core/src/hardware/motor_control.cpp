@@ -12,6 +12,7 @@
 #include <librmcs/board/rmcs_board_lite.hpp>
 #include <librmcs/data/datas.hpp>
 #include <rmcs_executor/component.hpp>
+#include <rmcs_msgs/switch.hpp>
 
 #include "controller/pid/pid_calculator.hpp"
 #include "hardware/device/can_packet.hpp"
@@ -75,7 +76,7 @@ public:
 
         if (dr16_.valid()) {
             double stick_val = -dr16_.joystick_right().y();
-            bool is_angle_mode = false;
+            bool is_angle_mode = (dr16_.switch_left() == rmcs_msgs::Switch::DOWN);
 
             if (!is_angle_mode) {
                 double target_velocity = stick_val * 5.0;
@@ -84,6 +85,8 @@ public:
                 double target_angle = stick_val * 1.57;
                 double current_angle = motor_.angle();
                 double angle_error = target_angle - current_angle;
+                while (angle_error > 3.1415926) angle_error -= 2 * 3.1415926;
+                while (angle_error < -3.1415926) angle_error += 2 * 3.1415926;
                 double target_velocity_from_angle = angle_pid_.update(angle_error);
 
                 if (target_velocity_from_angle > 5.0) target_velocity_from_angle = 5.0;
@@ -122,6 +125,7 @@ private:
             dr16_.store_status(data.uart_data.data(), data.uart_data.size());
         }
     }
+    ~Motorcontrol() override = default;
 private:
     rclcpp::Logger logger_;
     std::unique_ptr<librmcs::board::RmcsBoardLite> board_;
