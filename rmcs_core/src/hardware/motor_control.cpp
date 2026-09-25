@@ -110,6 +110,19 @@ public:
                  .as_bytes()});
     }
 private:
+    void can_receive_callback(const Spec::Can& can, const View::Can& data) override {
+        if (data.is_extended_can_id || data.is_remote_transmission) [[unlikely]] return;
+        if (can == Spec::kCans.kCan2 && data.can_id == 0x205) {
+            motor_.store_status(data.can_data);
+        }
+    }
+
+    void uart_receive_callback(const Spec::Uart& uart, const View::Uart& data) override {
+        if (uart == Spec::kUarts.kDbus) {
+            dr16_.store_status(data.uart_data.data(), data.uart_data.size());
+        }
+    }
+private:
     rclcpp::Logger logger_;
     std::unique_ptr<librmcs::board::RmcsBoardLite> board_;
     std::shared_ptr<Command> command_;
