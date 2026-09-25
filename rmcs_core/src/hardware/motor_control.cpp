@@ -67,10 +67,49 @@ public:
             *this, get_parameter("board_serial").as_string());
         remote_control_ = std::make_unique<device::RemoteControl>(*this);
         remote_control_->register_dr16(&dr16_);
+    }
+    void update() override {
+        motor_.update_status();
+        filtered_velocity_ = filtered_velocity_ * 0.85 + motor_.velocity() * 0.15;
+        dr16_.update_status();
 
+        if (dr16_.valid()) {
+            double stick_val = -dr16_.joystick_right().y();
+            bool is_angle_mode = false;
+
+            if (!is_angle_mode) {
+                double target_velocity = stick_val * 5.0;
+                motor_command_ = speed_pid_.update(target_velocity - filtered_velocity_);
+            } else {
+                double target_angle = stick_val * 1.57;
+                double current_angle = motor_.angle();
+                double angle_error = target_angle - current_angle;
+                double target_velocity_from_angle = angle_pid_.update(angle_error);
+
+                if (target_velocity_from_angle > 5.0) target_velocity_from_angle = 5.0;
+                if (target_velocity_from_angle < -5.0) target_velocity_from_angle = -5.0;
+
+                motor_command_ = speed_pid_.update(target_velocity_from_angle - filtered_velocity_);
+            }
+        } else {
+            motor_command_ = 0.0;
         }
-    
-    private:
+
+        *motor_angle_output_ = motor_.angle();
+        *motor_velocity_output_ = filtered_velocity_;
+        *motor_command_output_ = motor_command_;
+    }
+
+    void command_update() {
+        auto b = board_->start_transmit();
+        b.can_transmit(
+            Spec::kCans.kCan2,
+            {.can_id = 0x1FE,
+             .can_data = device::CanPacket8{
+                 motor_.generate_command(motor_command_), {}, {}, {}}
+                 .as_bytes()});
+    }
+private:
     rclcpp::Logger logger_;
     std::unique_ptr<librmcs::board::RmcsBoardLite> board_;
     std::shared_ptr<Command> command_;
