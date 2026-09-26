@@ -1,0 +1,3 @@
+<library path="rmcs_vision">
+  <class type="rmcs::vision::ContourDetector" base_class_type="rmcs_executor::Component" />
+</library>
